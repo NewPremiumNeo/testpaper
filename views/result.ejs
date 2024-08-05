@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/stylesheets/exam.css">
+    <link rel="stylesheet" href="/stylesheets/result.css">
+    <style>
+        .svgCover {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+        }
+
+        .svgCover.big {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            font-weight: 800;
+        }
+
+        .svgCover.big svg {
+            height: 30px;
+            width: 30px;
+        }
+
+        .svgCover svg {
+            color: white;
+            margin-right: 0rem;
+        }
+
+        .status span {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+        }
+
+        .count_data {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .count_data>div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+
+        .question-numbers .count {
+            margin-bottom: 0rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <span class="timer">Result</span>
+        <h1 class="title">TITLE</h1>
+        <h2 class="ham_bar"><i class="fas fa-bars"></i></h2>
+    </nav>
+
+    <div class="container">
+        <div class="question__container">
+            <div class="subject">
+                <h3>Result</h3>
+            </div>
+
+            <div class="question">
+            </div>
+        </div>
+
+        <aside>
+            <div class="status">
+                <span>
+                    <span class="svgCover correct_question">
+                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check"
+                            class="svg-inline--fa fa-check  position-absolute center text-white" role="img"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                            <path fill="currentColor"
+                                d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
+                            </path>
+                        </svg> </span>
+                    Correct
+                </span>
+
+                <span>
+                    <span class="svgCover incorrect_question">
+                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="xmark"
+                            class="svg-inline--fa fa-xmark  position-absolute center text-white" role="img"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                            <path fill="currentColor"
+                                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z">
+                            </path>
+                        </svg>
+                    </span>
+                    Incorrect
+                </span>
+                <span>
+                    <span class="svgCover unattempted_question">
+                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="minus"
+                            class="svg-inline--fa fa-minus  position-absolute center text-white" role="img"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                            <path fill="currentColor"
+                                d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z">
+                            </path>
+                        </svg>
+                    </span> Not Attempted
+                </span>
+            </div>
+            <div class="question-numbers">
+                <div class="count">
+                    <h4>Hindi</h4>
+                    <div class="count_data">
+                        <div class="me-3"><span class="svgCover correct_question">
+                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check"
+                                    class="svg-inline--fa fa-check  position-absolute center text-white" role="img"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                    <path fill="currentColor"
+                                        d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
+                                    </path>
+                                </svg> </span><span class="correct_num">0</span></div>
+
+                        <div class="me-3"><span class="svgCover incorrect_question">
+                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="xmark"
+                                    class="svg-inline--fa fa-xmark  position-absolute center text-white" role="img"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                                    <path fill="currentColor"
+                                        d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z">
+                                    </path>
+                                </svg>
+                            </span><span class="incorrect_num">0</span></div>
+
+
+                        <div class="me-3"><span class="svgCover unattempted_question">
+                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="minus"
+                                    class="svg-inline--fa fa-minus  position-absolute center text-white" role="img"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                    <path fill="currentColor"
+                                        d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z">
+                                    </path>
+                                </svg>
+                            </span><span class="unattempted_num">0</span></div>
+
+
+                    </div>
+                </div>
+                <div class="numbers-grid">
+                </div>
+            </div>
+            <button class="btn_submit" onclick="renderHome()">Overview</button>
+        </aside>
+    </div>
+    <script>
+        const hamBar = document.querySelector('.ham_bar');
+        const aside = document.querySelector('aside');
+        const questionContainer = document.querySelector('.question__container');
+
+        hamBar.addEventListener('click', () => {
+            aside.classList.toggle('collapsed');
+            questionContainer.classList.toggle('expanded');
+        });
+
+    </script>
+    <script src="/javascripts/result.js"></script>
+</body>
+
+</html>

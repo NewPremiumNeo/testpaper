@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Exam Questions</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 70px; /* Space for fixed navbar */
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .question-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">Added Questions: <span id="question-count">0</span></span>
+            <span class="navbar-brand mb-0 h1">Total Marks: <span id="total-marks">0</span></span>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="mb-4">Add New Exam Questions</h2>
+        <div class="form-group">
+            <label for="exam_title">Exam Title:</label>
+            <input type="text" id="exam_title" class="form-control" placeholder="Enter exam title" required />
+        </div>
+
+        <div class="form-group row">
+            <div class="col">
+                <label for="description">Description :</label>
+                <input type="number" id="description" class="form-control" placeholder="Enter Description" required />
+            </div>
+            <div class="col">
+                <label for="time">Time (in minutes):</label>
+                <input type="number" id="time" class="form-control" placeholder="Enter time" required />
+            </div>
+        </div>
+
+        <div id="questions-container"></div>
+
+        <button id="add-question" class="btn btn-primary">Add Question</button>
+        <button id="submit-exam" class="btn btn-success">Submit Exam</button>
+    </div>
+
+    <script>
+        let questionCounter = 0; // Counter for added questions
+        let totalMarks = 0; // Total marks
+
+        document.getElementById('add-question').addEventListener('click', () => {
+            questionCounter++; // Increment question counter
+            document.getElementById('question-count').innerText = questionCounter; // Update the displayed count
+
+            const questionContainer = document.createElement('div');
+            questionContainer.classList.add('question-item');
+
+            questionContainer.innerHTML = `
+                <div class="form-group">
+                    <label for="question_text">Question:</label>
+                    <input type="text" class="form-control question_text" placeholder="Enter your question here" required />
+                </div>
+
+                <div class="options-row">
+                    <div class="col">
+                        <label for="option1">Option 1:</label>
+                        <input type="text" class="form-control option" placeholder="Enter option 1" required />
+                    </div>
+                    <div class="col">
+                        <label for="option2">Option 2:</label>
+                        <input type="text" class="form-control option" placeholder="Enter option 2" required />
+                    </div>
+                </div>
+
+                <div class="options-row mt-2">
+                    <div class="col">
+                        <label for="option3">Option 3:</label>
+                        <input type="text" class="form-control option" placeholder="Enter option 3" required />
+                    </div>
+                    <div class="col">
+                        <label for="option4">Option 4:</label>
+                        <input type="text" class="form-control option" placeholder="Enter option 4" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="correct_option">Correct Option (number):</label>
+                    <input type="number" class="form-control correct_option" min="1" max="4" required />
+                </div>
+
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="positive_marks">Positive Marks:</label>
+                        <input type="number" class="form-control positive_marks" placeholder="Enter positive marks" required />
+                    </div>
+                    <div class="col">
+                        <label for="negative_marks">Negative Marks:</label>
+                        <input type="number" class="form-control negative_marks" placeholder="Enter negative marks" value="0" />
+                    </div>
+                </div>
+
+                <button class="btn btn-danger remove-question">Remove Question</button>
+            `;
+
+            // Update total marks on adding a question
+            const positiveMarksInput = questionContainer.querySelector('.positive_marks');
+            positiveMarksInput.addEventListener('input', () => {
+                totalMarks += Number(positiveMarksInput.value);
+                document.getElementById('total-marks').innerText = totalMarks; // Update displayed total marks
+            });
+
+            questionContainer.querySelector('.remove-question').addEventListener('click', () => {
+                const positiveMarks = Number(positiveMarksInput.value);
+                totalMarks -= positiveMarks; // Decrement total marks by the removed question's positive marks
+                document.getElementById('total-marks').innerText = totalMarks; // Update displayed total marks
+                questionCounter--; // Decrement question counter
+                document.getElementById('question-count').innerText = questionCounter; // Update the displayed count
+                questionContainer.remove();
+            });
+
+            document.getElementById('questions-container').appendChild(questionContainer);
+        });
+
+        document.getElementById('submit-exam').addEventListener('click', () => {
+            const examData = {
+                marks: totalMarks, // Set total marks
+                questionsCount: questionCounter, // Set the number of questions based on the counter
+                time: document.getElementById('time').value,    
+                title: document.getElementById('exam_title').value,
+                description: document.getElementById('description').value,
+                questions: []
+            };
+
+            const questionItems = document.querySelectorAll('.question-item');
+            questionItems.forEach(item => {
+                const questionText = item.querySelector('.question_text').value;
+                const options = Array.from(item.querySelectorAll('.option')).map(opt => opt.value);
+                const correctOption = item.querySelector('.correct_option').value;
+                const positiveMarks = item.querySelector('.positive_marks').value;
+                const negativeMarks = item.querySelector('.negative_marks').value;
+
+                const questionData = {
+                    answer: correctOption,
+                    negative_marks: negativeMarks,
+                    positive_marks: positiveMarks,
+                    question: questionText,
+                    question_type: "MCQ",
+                    question_id: Date.now().toString(),
+                    options: options.map((option, index) => ({
+                        option: option,
+                        option_number: index + 1,
+                        option_image: "",
+                        optionval: ""
+                    })),
+                    question_number: examData.questions.length + 1,
+                    explanation: ''
+                };
+
+                examData.questions.push(questionData);
+            });
+
+            fetch('/admin/test/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(examData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

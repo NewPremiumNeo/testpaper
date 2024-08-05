@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Test Papers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #1a202c;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 1.2rem;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin: 0;
+            margin-bottom: 10px;
+        }
+
+        .card hr {
+            border: 1px solid #e2e8f0;
+            margin: 10px 0;
+        }
+
+        .card .flex {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .card button {
+            background-color: #146FE6;
+            color: #ffffff;
+            border: none;
+            border-radius: 2rem;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .card button:hover {
+            background-color: #1058B7;
+        }
+
+        .space-x-2>* {
+            margin-right: 10px;
+        }
+
+        .btn-danger {
+            color: red;
+            text-decoration: none;
+
+        }
+
+        .btn-primary {
+            color: blue;
+            text-decoration: none;
+        }
+
+        .description {
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: #4a5568;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Available Test Papers
+        <button class="btn btn-danger" onclick="window.location.href='/logout'">Logout</button>
+    </h2>
+
+    <div class="container">
+        <% if (tests && tests.length> 0) { %>
+            <% tests.forEach(test=> { %>
+                <div class="card">
+                    <h2>
+                        <%= test.title %>
+                    </h2>
+                    <p class="description">
+                        <%= test.description %>
+                    </p>
+                    <hr>
+                    <div class="flex">
+                        <span>
+                            <%= test.questions.length %> <br> Questions
+                        </span>
+                        <span>
+                            <%= test.totalMarks %> <br> Marks
+                        </span>
+                        <span>
+                            <%= test.timeLimit %> <br> Minutes
+                        </span>
+                    </div>
+                    <% if (user) { %>
+                        <% const isTestSolved=user.solvedPapers.some(paper=> paper.testId.equals(test._id)); %>
+                            <% if (isTestSolved) { %>
+                                <button onclick="window.location.href='/test/<%= test._id %>'">Re-attempt</button>
+                                <button onclick="window.location.href='/test/<%= test._id %>/result'">Results</button>
+                                <% } else { %>
+                                    <button onclick="window.location.href='/test/<%= test._id %>'">Attempt</button>
+                                    <% } %>
+
+
+                                        <% } else { %>
+                                            <a href="/test/<%= test._id %>" type="button"
+                                                class="btn btn-primary d-block w-100 attempt">Attempt</a>
+
+                                            <a href="/login" type="button"
+                                                class="btn btn-primary d-block w-100 attempt">Login to
+                                                Attempt</a>
+                                            <% } %>
+                </div>
+
+                <% }) %>
+                    <% } else { %>
+                        <div class="col-12">
+                            <p class="text-center">No test papers available.</p>
+                        </div>
+                        <% } %>
+    </div>
+    <script>
+        localStorage.removeItem('test_attempt')
+        localStorage.removeItem('result')
+    </script>
+</body>
+
+</html>

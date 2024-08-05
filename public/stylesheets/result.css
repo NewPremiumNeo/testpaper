@@ -1,0 +1,30 @@
+.correct_question{
+    background-color: #25C16F;
+    color: white;
+}
+.unattempted_question{
+    background-color: #9B9B9B;
+    color: white;
+}
+.incorrect_question, .incorrect_answer{
+    background-color: #DC3545;
+    color: white;
+}
+
+.correct_answer{
+    background-color: #25C16F;
+    color: white;
+}
+.score{
+    background-color: #FF9C00;
+    color: white;
+}
+.accuracy{
+    background-color: #146FE6;
+    color: white;
+}
+
+.resultValue{
+    font-family: monospace;
+    
+}
