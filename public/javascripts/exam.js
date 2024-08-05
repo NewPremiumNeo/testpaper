@@ -281,6 +281,9 @@ const initializeTest = () => {
         document.querySelector('.btn_submit').addEventListener('click', () => {
             test_ended()
         })
+        document.querySelector('.btn_submit_2').addEventListener('click', () => {
+            test_ended()
+        })
 
         async function test_ended() {
             testAttemptData.is_test_ended = true;

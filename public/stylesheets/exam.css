@@ -299,6 +299,15 @@ aside.collapsed {
     margin-top: 2rem;
     cursor: pointer;
 }
+.btn_submit_2 {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    background-color: #146FE6;
+    border-radius: 10rem;
+    color: white;
+    cursor: pointer;
+    display: none;
+}
 
 svg {
     height: 15px;
@@ -432,6 +441,14 @@ svg.text-danger {
         right: 0;
         width: 50%;
     }
+    .subject{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .btn_submit_2{
+        display: block;
+    }
 }
 @media (max-width: 485px) {
     html{
@@ -452,4 +469,5 @@ svg.text-danger {
         right: 0;
         width: 60%;
     }
+    
 }

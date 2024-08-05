@@ -11,11 +11,6 @@ const fetchTestResultData = async () => {
         const urlParts = window.location.pathname.split('/');
         const testId = urlParts[urlParts.length - 2];
 
-        const testAttemptData = JSON.parse(localStorage.getItem('result')) || null;
-        if (testAttemptData && testAttemptData.test_id == testId) {
-            return;
-        }
-
         // Make the fetch call
         const response = await fetch(`/api/test/${testId}/result`, {
             method: 'GET',
@@ -193,7 +188,7 @@ function renderHome() {
                             d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-352a96 96 0 1 1 0 192 96 96 0 1 1 0-192z">
                         </path>
                     </svg>
-                </span> Accuracy: <span class="resultValue">${Correct.length / testAttemptData.questions * 100}%</span>
+                </span> Accuracy: <span class="resultValue">${((Correct.length / testAttemptData.questions) * 100).toFixed(2)}%</span>
             </span>
         </div>
 
