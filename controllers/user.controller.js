@@ -167,6 +167,11 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 const logoutUser = asyncHandler(async (req, res) => {
+    if(!req.user._id){
+        return res
+        .status(200)
+        .redirect('/login')
+    }
     await User.findByIdAndUpdate(
         req.user._id,
         {
