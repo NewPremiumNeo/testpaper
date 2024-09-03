@@ -35,12 +35,12 @@ const fetchTestData = async () => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log(response, "resp ")
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
-
+        
         const data = await response.json();
+        console.log("resp ", data)
 
         // Store the response in localStorage
         localStorage.setItem('test_attempt', JSON.stringify(data));
@@ -70,7 +70,14 @@ const initializeTest = () => {
         // Function to render the current question and its options
         function renderQuestion() {
             const question = questions[currentQuestionIndex];
-            questionTextElement.innerHTML = `${question.question_number}. ${question.question}`;
+
+            console.log("Quest ", question.question_type);
+
+             // Check if the question is MSQ (Multiple Select Question)
+            const isMSQ = question.question_type === 'MSQ';
+            const inputType = isMSQ ? 'checkbox' : 'radio';
+
+            questionTextElement.innerHTML = `${question.question_number}. ${question.question} ${question.question_type === "MSQ" ? "<b><i>(MSQ)</i></b>" : ''}`;
             document.querySelector(`button[question-num="${currentQuestionIndex + 1}"]`).classList.add('current_question');
             // Clear previous options
             optionsContainer.innerHTML = '';
@@ -81,14 +88,14 @@ const initializeTest = () => {
                 optionLabel.className = 'option';
                 option.selected ? optionLabel.classList.add('checked') : '';
                 optionLabel.innerHTML = `
-                <input type="radio" name="answer" value="${option.option_number}" class="hidden" ${option.selected ? 'checked' : ''} />
+                <input type="${inputType}" name="answer" value="${option.option_number}" class="hidden" ${option.selected ? 'checked' : ''} />
                 ${option.option_number}. <div>${option.option}</div>
                 `;
                 optionsContainer.appendChild(optionLabel);
             });
 
             updateLocalStorageTime();
-            updateOptionStyles();
+            updateOptionStyles(isMSQ);
             if (testAttemptData.is_test_ended) {
                 test_ended();
                 return;
@@ -148,11 +155,13 @@ const initializeTest = () => {
 
         // Function to save the current answer and state
         function saveCurrentAnswer(state) {
-            clearResponse()
-            const selectedOption = document.querySelector('input[name="answer"]:checked');
-            if (selectedOption) {
-                const selectedValue = selectedOption.value;
-                questions[currentQuestionIndex].options[selectedValue - 1].selected = true;
+            const question = questions[currentQuestionIndex];
+            clearResponse();
+            const selectedOptions = document.querySelectorAll('input[name="answer"]:checked');
+            if (selectedOptions.length > 0) {
+                questions[currentQuestionIndex].options.forEach((option, index) => {
+                    option.selected = [...selectedOptions].some(selectedOption => selectedOption.value == option.option_number);
+                });
                 questions[currentQuestionIndex].state = state;
                 questions[currentQuestionIndex].answered = true;
                 questions[currentQuestionIndex].visited = true;
@@ -161,11 +170,12 @@ const initializeTest = () => {
                 questions[currentQuestionIndex].visited = true;
             }
             testAttemptData.current_question_position = currentQuestionIndex;
-
+        
             updateLocalStorageTime();
             updateQuestionNumbers();
-            updateOptionStyles();
+            updateOptionStyles(question.question_type === 'MSQ');
         }
+        
 
         function clearResponse() {
             const currentQuestion = questions[currentQuestionIndex];
@@ -209,7 +219,7 @@ const initializeTest = () => {
             clearResponse();
             const options = document.querySelectorAll('input[name="answer"]');
             options.forEach(option => {
-                if (option.checked) { 
+                if (option.checked) {
                     option.checked = false; // Clear the selection
                     const label = document.querySelector(`label[class="option checked"]`);
                     if (label) {
@@ -220,24 +230,30 @@ const initializeTest = () => {
             updateQuestionNumbers();
         });
 
-        function updateOptionStyles() {
+        function updateOptionStyles(isMSQ) {
             const options_html = document.querySelectorAll('.option');
             options_html.forEach(option => {
-                const radioButton = option.querySelector('input[type="radio"]');
-
-                if (radioButton.checked) {
+                const inputElement = option.querySelector(`input[type="${isMSQ ? 'checkbox' : 'radio'}"]`);
+        
+                if (inputElement.checked) {
                     option.classList.add('checked');
                 } else {
                     option.classList.remove('checked');
                 }
-
+        
                 option.addEventListener('click', () => {
-                    options_html.forEach(e => {
-                        e.querySelector('input[type="radio"]').checked = false;
-                        e.classList.remove('checked');
-                    });
-                    radioButton.checked = true;
-                    option.classList.add('checked');
+                    if (!isMSQ) {
+                        options_html.forEach(e => {
+                            e.querySelector('input[type="radio"]').checked = false;
+                            e.classList.remove('checked');
+                        });
+                    }
+                    inputElement.checked = !inputElement.checked;
+                    if (inputElement.checked) {
+                        option.classList.add('checked');
+                    } else {
+                        option.classList.remove('checked');
+                    }
                     updateLocalStorageTime();
                 });
             });
@@ -254,7 +270,7 @@ const initializeTest = () => {
                 const minutes = Math.floor((timeInSeconds % 3600) / 60);
                 const seconds = timeInSeconds % 60;
                 timerElement.innerHTML = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                if(!testAttemptData.is_test_ended){
+                if (!testAttemptData.is_test_ended) {
                     timeInSeconds--;
                 }
                 if (timeInSeconds < 0) {

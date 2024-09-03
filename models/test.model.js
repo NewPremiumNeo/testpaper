@@ -1,6 +1,30 @@
 import mongoose from "mongoose";
 import { type } from "os";
 
+// 1. Product Line Schema
+const productLineSchema = mongoose.Schema({
+    title: { type: String, required: true },
+    description: { type: String },
+    public: { type: Boolean, default: false },
+    active: { type: Boolean, default: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
+}, { timestamps: true });
+
+
+// 2. Course Schema
+const courseSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    description: { type: String },
+    productLine: { type: mongoose.Schema.Types.ObjectId, ref: 'ProductLine', required: true },
+    test: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Test' }],
+    public: { type: Boolean, default: false },
+    // sysId: { type: String, default: uuidv4, unique: true },
+    active: { type: Boolean, default: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+}, { timestamps: true });
+
 // Define the schema for questions
 const questionSchema = mongoose.Schema({
     type: {
@@ -22,7 +46,7 @@ const questionSchema = mongoose.Schema({
             required: true
         },
         option_image: {
-            type: String, 
+            type: String,
             default: ''
         }
     }],
@@ -44,7 +68,8 @@ const questionSchema = mongoose.Schema({
     },
     explanation: {
         type: String,
-    }
+    },
+    active: { type: Boolean, default: true },
 }, { timestamps: true });
 
 // Define the schema for the test paper
@@ -56,6 +81,10 @@ const testSchema = mongoose.Schema({
     description: {
         type: String,
     },
+    course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
+    date: { type: Date },
+    // course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
+    // date: { type: Date, required: true },
     questions: [questionSchema],
     timeLimit: {
         type: Number, // time limit in minutes
@@ -70,24 +99,22 @@ const testSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    tags: [{
-        type: String,
-    }],
-    isActive: {
-        type: Boolean,
-        default: true
-    },
-    attemptedUser:[{
+    tags: [{ type: String }],
+    isActive: { type: Boolean, default: true },
+    attemptedUser: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         default: []
     }],
-    solvedUser:[{
+    solvedUser: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         default: []
     }]
 
 }, { timestamps: true });
+
+const ProductLine = mongoose.model('ProductLine', productLineSchema);
+const Course = mongoose.model('Course', courseSchema);
 
 export const Test = mongoose.model("Test", testSchema)

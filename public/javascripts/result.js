@@ -59,41 +59,73 @@ const initializeTest = async () => {
     const questions = testAttemptData.test_sections[0].questions;
 
     questions.forEach((q, index) => {
-        if (q.answered == true) {
-            if (q.options[q.answer - 1].selected == true) {
-                Correct.push(q)
-                positiveMarks += Math.abs(Number(q.positive_marks));
+        console.log(q);
+    
+        if (q.answered === true) {
+            const correctAnswers = Array.isArray(q.answer) ? q.answer.map(Number) : [Number(q.answer)];
+    
+            if (q.question_type === "MSQ") {
+                // Check if all correct options are selected and no incorrect options are selected
+                const isCorrect = correctAnswers.every(correctOption => 
+                    q.options[correctOption - 1].selected === true
+                ) && q.options.every((option, idx) => 
+                    !option.selected || correctAnswers.includes(idx + 1)
+                );
+    
+                if (isCorrect) {
+                    Correct.push(q);
+                    positiveMarks += Math.abs(Number(q.positive_marks));
+                } else {
+                    Incorrect.push(q);
+                    negativeMarks += Math.abs(Number(q.negative_marks));
+                }
+            } else {
+                // For MCQ
+                if (q.options[correctAnswers[0] - 1].selected === true) {
+                    Correct.push(q);
+                    positiveMarks += Math.abs(Number(q.positive_marks));
+                } else {
+                    Incorrect.push(q);
+                    negativeMarks += Math.abs(Number(q.negative_marks));
+                }
             }
-            else {
-                Incorrect.push(q)
-                negativeMarks += Math.abs(Number(q.negative_marks));
-            }
+        } else {
+            Unattempted.push(q);
         }
-        else {
-            Unattempted.push(q)
-        }
-
     });
+    
+    
 
     function renderQuestion(currentQuestionIndex) {
         const question = questions[currentQuestionIndex];
-        let optionssss = ''
+        let optionssss = '';
+    
+        // Convert the correct answer(s) to an array of numbers
+        const correctAnswers = Array.isArray(question.answer) ? question.answer.map(Number) : [Number(question.answer)];
+    
         question.options.forEach(option => {
-            const lable = `<label class="option ${option.selected ? (option.option_number == question.answer ? 'correct_answer' : 'incorrect_answer') : (option.option_number == question.answer ? 'correct_answer' : '')}">
-                        ${option.option_number}. <div>${option.option}</div>
-                        </label>`
-            optionssss += lable
+            // Determine if the current option is correct and/or selected
+            const isCorrectAnswer = correctAnswers.includes(option.option_number);
+            const isSelected = option.selected;
+            const labelClass = isSelected 
+                ? (isCorrectAnswer ? 'correct_answer' : 'incorrect_answer')
+                : (isCorrectAnswer ? 'correct_answer' : '');
+    
+            const label = `<label class="option ${labelClass}">
+                            ${option.option_number}. <div>${option.option}</div>
+                           </label>`;
+            optionssss += label;
         });
+    
         const mainText = `
-                <p class="question-text">${question.question_number}. ${question.question}</p>
-                <div class="options-container">
+            <p class="question-text">${question.question_number}. ${question.question} ${question.question_type === "MSQ" ? "<b><i>(MSQ)</i></b>" : ''}</p>
+            <div class="options-container">
                 ${optionssss}
-                </div>
-    `;
-        mainQuestionContainer.innerHTML = mainText
-
-        // updateOptionStyles();
+            </div>
+        `;
+        mainQuestionContainer.innerHTML = mainText;
     }
+    
 
     function updateQuestionNumbers() {
         numbersGridElement.innerHTML = '';
@@ -208,3 +240,5 @@ function toggleAsideClass() {
         aside.classList.remove('collapsed');
     }
 }
+
+

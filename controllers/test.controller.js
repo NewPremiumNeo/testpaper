@@ -72,7 +72,7 @@ const postTestPage = async (req, res) => {
         const testSections = test.questions.map((question, index) => ({
             question: question.questionText,
             question_type: question.type,
-            answer: question.correctAnswers[0],
+            answer: question.correctAnswers,
             negative_marks: question.negative_marks,
             positive_marks: question.positive_marks,
             question_number: question.question_number, // Make sure this is a string
